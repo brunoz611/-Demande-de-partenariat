@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Galerie photos : ateliers, plats à emporter, cocktails et événements signés Magali & Ghislain.">
+  <title>Galerie photos – Magali & Ghislain</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="page-galerie">
+  <header class="site-header">
+    <a class="logo" href="index.html">Magali &amp; Ghislain</a>
+    <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+      <span class="sr-only">Menu</span>
+      <span class="hamburger"></span>
+    </button>
+    <nav id="primary-navigation" class="site-nav" aria-label="Navigation principale">
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="activite-pro-ateliers.html">Atelier en entreprise</a></li>
+        <li><a href="activite-pro-traiteur.html">Traiteur &amp; cocktail</a></li>
+        <li><a href="activite-particulier-plats.html">Plats à emporter</a></li>
+        <li><a href="activite-particulier-evenements.html">Sport &amp; cocktail healthy</a></li>
+        <li><a class="active" href="galerie.html">Galerie</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="subpage-hero">
+      <div class="hero-content">
+        <p class="eyebrow">Galerie</p>
+        <h1>Mettons vos expériences en images</h1>
+        <p>Ajoutez vos photos d’ateliers, de buffets et d’événements pour donner envie à vos futurs clients.</p>
+        <a class="btn ghost" href="#upload-guide">Comment ajouter des photos&nbsp;?</a>
+      </div>
+      <div class="hero-media">
+        <div class="image-placeholder">Mosaïque photos</div>
+      </div>
+    </section>
+
+    <section class="gallery-grid">
+      <h2>Vos meilleurs moments</h2>
+      <div class="grid">
+        <figure class="gallery-item">
+          <div class="image-placeholder">Photo 1</div>
+          <figcaption>Atelier participatif – Entreprise</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="image-placeholder">Photo 2</div>
+          <figcaption>Cocktail dînatoire – Inauguration</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="image-placeholder">Photo 3</div>
+          <figcaption>Plat à emporter – Menu de saison</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="image-placeholder">Photo 4</div>
+          <figcaption>Événement Sport &amp; healthy</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="image-placeholder">Photo 5</div>
+          <figcaption>Team building – Moment dégustation</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="image-placeholder">Photo 6</div>
+          <figcaption>Buffet gourmand</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="upload-guide" id="upload-guide">
+      <div class="section-header">
+        <h2>Ajouter facilement vos photos</h2>
+      </div>
+      <ol class="timeline">
+        <li>
+          <h3>Préparez vos visuels</h3>
+          <p>Format JPEG ou PNG, 1600px de large minimum pour conserver la qualité.</p>
+        </li>
+        <li>
+          <h3>Classez-les</h3>
+          <p>Placez les fichiers dans le dossier <code>assets/images</code>. Utilisez des noms explicites : <code>atelier-equipe-01.jpg</code>.</p>
+        </li>
+        <li>
+          <h3>Mettez à jour la galerie</h3>
+          <p>Remplacez les balises <code>div.image-placeholder</code> par des balises <code>&lt;img&gt;</code> et ajustez les légendes.</p>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-contact">
+      <h3>Contact</h3>
+      <p>Ghislain Chamonard<br>06&nbsp;61&nbsp;96&nbsp;27&nbsp;63<br><a href="mailto:gchamonard@yahoo.com">gchamonard@yahoo.com</a></p>
+      <p><a href="https://www.linkedin.com/in/ghislain-chamonard-a0a466149" target="_blank" rel="noopener">LinkedIn</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="contact.html">Contact</a>
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="politique-confidentialite.html">Politique de confidentialité</a>
+      <a href="gestion-cookies.html">Gestion des cookies</a>
+    </div>
+    <p class="footer-credit">Site réalisé avec le soutien des étudiants – © <span class="current-year"></span> Magali &amp; Ghislain</p>
+  </footer>
+
+  <div class="cookie-banner" role="dialog" aria-live="polite" aria-label="Bannière de consentement aux cookies">
+    <p>Nous utilisons des cookies pour améliorer votre expérience. Personnalisez vos préférences à tout moment.</p>
+    <div class="cookie-actions">
+      <button class="btn ghost" data-cookie-action="preferences">Personnaliser</button>
+      <button class="btn" data-cookie-action="accept">Tout accepter</button>
+    </div>
+  </div>
+
+  <script defer src="assets/js/main.js"></script>
+</body>
+</html>
