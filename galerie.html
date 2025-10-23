@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Galerie photos : ateliers, plats à emporter, cocktails et événements signés Magali & Ghislain.">
-  <title>Galerie photos – Magali & Ghislain</title>
+  <meta name="description" content="Galerie photos : ateliers, plats &agrave; emporter, cocktails et &eacute;v&eacute;nements sign&eacute;s Magali &amp; Ghislain.">
+  <title>Galerie photos &ndash; Magali &amp; Ghislain</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="page-galerie">
@@ -19,7 +19,7 @@
         <li><a href="index.html">Accueil</a></li>
         <li><a href="activite-pro-ateliers.html">Atelier en entreprise</a></li>
         <li><a href="activite-pro-traiteur.html">Traiteur &amp; cocktail</a></li>
-        <li><a href="activite-particulier-plats.html">Plats à emporter</a></li>
+        <li><a href="activite-particulier-plats.html">Plats &agrave; emporter</a></li>
         <li><a href="activite-particulier-evenements.html">Sport &amp; cocktail healthy</a></li>
         <li><a class="active" href="galerie.html">Galerie</a></li>
         <li><a href="contact.html">Contact</a></li>
@@ -31,43 +31,22 @@
     <section class="subpage-hero">
       <div class="hero-content">
         <p class="eyebrow">Galerie</p>
-        <h1>Mettons vos expériences en images</h1>
-        <p>Ajoutez vos photos d’ateliers, de buffets et d’événements pour donner envie à vos futurs clients.</p>
+        <h1>Mettons vos exp&eacute;riences en images</h1>
+        <p>Ajoutez vos photos d&rsquo;ateliers, de buffets et d&rsquo;&eacute;v&eacute;nements pour donner envie &agrave; vos futurs clients.</p>
         <a class="btn ghost" href="#upload-guide">Comment ajouter des photos&nbsp;?</a>
       </div>
       <div class="hero-media">
-        <div class="image-placeholder">Mosaïque photos</div>
+        <div class="image-placeholder">Mosa&iuml;que photos</div>
       </div>
     </section>
 
     <section class="gallery-grid">
       <h2>Vos meilleurs moments</h2>
-      <div class="grid">
-        <figure class="gallery-item">
-          <div class="image-placeholder">Photo 1</div>
-          <figcaption>Atelier participatif – Entreprise</figcaption>
-        </figure>
-        <figure class="gallery-item">
-          <div class="image-placeholder">Photo 2</div>
-          <figcaption>Cocktail dînatoire – Inauguration</figcaption>
-        </figure>
-        <figure class="gallery-item">
-          <div class="image-placeholder">Photo 3</div>
-          <figcaption>Plat à emporter – Menu de saison</figcaption>
-        </figure>
-        <figure class="gallery-item">
-          <div class="image-placeholder">Photo 4</div>
-          <figcaption>Événement Sport &amp; healthy</figcaption>
-        </figure>
-        <figure class="gallery-item">
-          <div class="image-placeholder">Photo 5</div>
-          <figcaption>Team building – Moment dégustation</figcaption>
-        </figure>
-        <figure class="gallery-item">
-          <div class="image-placeholder">Photo 6</div>
-          <figcaption>Buffet gourmand</figcaption>
-        </figure>
-      </div>
+      <div class="grid" id="gallery-grid" data-gallery></div>
+      <p class="gallery-empty" hidden>
+        Ajoutez vos images dans <code>assets/images</code> puis compl&eacute;tez la liste dans
+        <code>assets/js/gallery-data.js</code> pour les afficher ici.
+      </p>
     </section>
 
     <section class="upload-guide" id="upload-guide">
@@ -76,16 +55,16 @@
       </div>
       <ol class="timeline">
         <li>
-          <h3>Préparez vos visuels</h3>
-          <p>Format JPEG ou PNG, 1600px de large minimum pour conserver la qualité.</p>
+          <h3>Pr&eacute;parez vos visuels</h3>
+          <p>Format JPEG ou PNG, 1600&nbsp;px de large minimum pour conserver la qualit&eacute;.</p>
         </li>
         <li>
           <h3>Classez-les</h3>
           <p>Placez les fichiers dans le dossier <code>assets/images</code>. Utilisez des noms explicites : <code>atelier-equipe-01.jpg</code>.</p>
         </li>
         <li>
-          <h3>Mettez à jour la galerie</h3>
-          <p>Remplacez les balises <code>div.image-placeholder</code> par des balises <code>&lt;img&gt;</code> et ajustez les légendes.</p>
+          <h3>Mettez &agrave; jour la galerie</h3>
+          <p>Ajoutez vos visuels dans <code>assets/js/gallery-data.js</code> (voir documentation) et la page se mettra &agrave; jour automatiquement.</p>
         </li>
       </ol>
     </section>
@@ -99,21 +78,22 @@
     </div>
     <div class="footer-links">
       <a href="contact.html">Contact</a>
-      <a href="mentions-legales.html">Mentions légales</a>
-      <a href="politique-confidentialite.html">Politique de confidentialité</a>
+      <a href="mentions-legales.html">Mentions l&eacute;gales</a>
+      <a href="politique-confidentialite.html">Politique de confidentialit&eacute;</a>
       <a href="gestion-cookies.html">Gestion des cookies</a>
     </div>
-    <p class="footer-credit">Site réalisé avec le soutien des étudiants – © <span class="current-year"></span> Magali &amp; Ghislain</p>
+    <p class="footer-credit">Site r&eacute;alis&eacute; avec le soutien des &eacute;tudiants &ndash; &copy; <span class="current-year"></span> Magali &amp; Ghislain</p>
   </footer>
 
-  <div class="cookie-banner" role="dialog" aria-live="polite" aria-label="Bannière de consentement aux cookies">
-    <p>Nous utilisons des cookies pour améliorer votre expérience. Personnalisez vos préférences à tout moment.</p>
+  <div class="cookie-banner" role="dialog" aria-live="polite" aria-label="Banni&egrave;re de consentement aux cookies">
+    <p>Nous utilisons des cookies pour am&eacute;liorer votre exp&eacute;rience. Personnalisez vos pr&eacute;f&eacute;rences &agrave; tout moment.</p>
     <div class="cookie-actions">
       <button class="btn ghost" data-cookie-action="preferences">Personnaliser</button>
       <button class="btn" data-cookie-action="accept">Tout accepter</button>
     </div>
   </div>
 
+  <script src="assets/js/gallery-data.js"></script>
   <script defer src="assets/js/main.js"></script>
 </body>
 </html>

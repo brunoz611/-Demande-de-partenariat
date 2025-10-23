@@ -142,6 +142,42 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Gallery rendering from external data file
+  const galleryContainer = document.querySelector("[data-gallery]");
+  if (galleryContainer) {
+    const emptyMessage = document.querySelector(".gallery-empty");
+    const galleryItems = Array.isArray(window.galleryData) ? window.galleryData : [];
+
+    if (!galleryItems.length) {
+      if (emptyMessage) {
+        emptyMessage.hidden = false;
+      }
+    } else {
+      galleryItems.forEach((item) => {
+        const figure = document.createElement("figure");
+        figure.className = "gallery-item";
+
+        if (item.image) {
+          const img = document.createElement("img");
+          img.src = item.image;
+          img.alt = item.title || "Photo de la galerie";
+          figure.appendChild(img);
+        } else {
+          const placeholder = document.createElement("div");
+          placeholder.className = "image-placeholder";
+          placeholder.textContent = "Image manquante";
+          figure.appendChild(placeholder);
+        }
+
+        const caption = document.createElement("figcaption");
+        caption.textContent = item.description || item.title || "Visuel de la galerie";
+        figure.appendChild(caption);
+
+        galleryContainer.appendChild(figure);
+      });
+    }
+  }
+
   // Simple form handling (placeholder until back-end integration)
   const forms = document.querySelectorAll("form[data-form]");
   forms.forEach((form) => {
