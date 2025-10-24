@@ -20,31 +20,55 @@
           <div class="form-row">
             <label class="form-field">
               <span>Couleur principale</span>
-              <input type="color" name="color-primary" required>
+              <div class="admin-color-control">
+                <input type="color" name="color-primary" data-color-field="primary" required>
+                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="primary"></span>
+                <span class="admin-color-value" data-color-value="primary">N/A</span>
+              </div>
             </label>
             <label class="form-field">
               <span>Couleur secondaire</span>
-              <input type="color" name="color-secondary" required>
+              <div class="admin-color-control">
+                <input type="color" name="color-secondary" data-color-field="secondary" required>
+                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="secondary"></span>
+                <span class="admin-color-value" data-color-value="secondary">N/A</span>
+              </div>
             </label>
           </div>
           <div class="form-row">
             <label class="form-field">
               <span>Couleur d'accent</span>
-              <input type="color" name="color-accent" required>
+              <div class="admin-color-control">
+                <input type="color" name="color-accent" data-color-field="accent" required>
+                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="accent"></span>
+                <span class="admin-color-value" data-color-value="accent">N/A</span>
+              </div>
             </label>
             <label class="form-field">
               <span>Couleur de fond</span>
-              <input type="color" name="color-background" required>
+              <div class="admin-color-control">
+                <input type="color" name="color-background" data-color-field="background" required>
+                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="background"></span>
+                <span class="admin-color-value" data-color-value="background">N/A</span>
+              </div>
             </label>
           </div>
           <div class="form-row">
             <label class="form-field">
               <span>Couleur du texte</span>
-              <input type="color" name="color-text" required>
+              <div class="admin-color-control">
+                <input type="color" name="color-text" data-color-field="text" required>
+                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="text"></span>
+                <span class="admin-color-value" data-color-value="text">N/A</span>
+              </div>
             </label>
             <label class="form-field">
               <span>Couleur att&eacute;nu&eacute;e</span>
-              <input type="color" name="color-muted" required>
+              <div class="admin-color-control">
+                <input type="color" name="color-muted" data-color-field="muted" required>
+                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="muted"></span>
+                <span class="admin-color-value" data-color-value="muted">N/A</span>
+              </div>
             </label>
           </div>
         </fieldset>
@@ -54,11 +78,11 @@
           <div class="form-row">
             <label class="form-field">
               <span>Police principale</span>
-              <input type="text" name="font-base" placeholder='"Segoe UI", "Roboto", sans-serif'>
+              <input type="text" name="font-base" data-font-field="base" placeholder='"Segoe UI", "Roboto", sans-serif'>
             </label>
             <label class="form-field">
               <span>Police des titres</span>
-              <input type="text" name="font-heading" placeholder='"Playfair Display", serif'>
+              <input type="text" name="font-heading" data-font-field="heading" placeholder='"Playfair Display", serif'>
             </label>
           </div>
           <small>Pour utiliser des polices externes, ajoutez-les aussi dans votre feuille de style.</small>
@@ -69,11 +93,11 @@
           <div class="form-row">
             <label class="form-field">
               <span>Texte du logo</span>
-              <input type="text" name="logo-text" placeholder="Nom affich&eacute; dans la navigation">
+              <input type="text" name="logo-text" data-logo-field="text" placeholder="Nom affich&eacute; dans la navigation">
             </label>
             <label class="form-field">
               <span>Texte alternatif</span>
-              <input type="text" name="logo-alt" placeholder="Description pour l'accessibilit&eacute;">
+              <input type="text" name="logo-alt" data-logo-field="alt" placeholder="Description pour l'accessibilit&eacute;">
             </label>
           </div>
           <div class="admin-logo-preview">

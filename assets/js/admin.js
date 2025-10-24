@@ -14,7 +14,20 @@ document.addEventListener("DOMContentLoaded", () => {
     ? customizationForm.querySelector('input[name="logo-file"]')
     : null;
 
-  let logoImageData = "";
+  if (!customizationForm) {
+    if (feedback) {
+      feedback.hidden = false;
+      feedback.textContent = "Formulaire introuvable.";
+      feedback.dataset.state = "error";
+    }
+    return;
+  }
+
+  const colorInputs = Array.from(customizationForm.querySelectorAll("[data-color-field]"));
+  const fontInputs = Array.from(customizationForm.querySelectorAll("[data-font-field]"));
+  const logoInputs = Array.from(customizationForm.querySelectorAll("[data-logo-field]"));
+
+  let draftSettings = customization.mergeWithDefaults(customization.getSettings());
 
   const showFeedback = (message = "", state = "info") => {
     if (!feedback) return;
@@ -29,10 +42,20 @@ document.addEventListener("DOMContentLoaded", () => {
     feedback.dataset.state = state;
   };
 
+  const indicatePreviewUpdated = () => {
+    showFeedback("Aperçu mis à jour (non enregistré).", "info");
+  };
+
+  const getLogoImage = () =>
+    draftSettings.logo && typeof draftSettings.logo.image === "string"
+      ? draftSettings.logo.image
+      : "";
+
   const updateLogoPreview = () => {
     if (!logoPreview) return;
-    if (logoImageData) {
-      logoPreview.src = logoImageData;
+    const image = getLogoImage();
+    if (image) {
+      logoPreview.src = image;
       logoPreview.hidden = false;
     } else {
       logoPreview.src = "";
@@ -40,67 +63,84 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const updateColorPreview = (key, value) => {
+    const preview = customizationForm.querySelector(`[data-color-preview="${key}"]`);
+    if (preview instanceof HTMLElement) {
+      preview.style.setProperty("--swatch-color", value || "transparent");
+    }
+    const valueLabel = customizationForm.querySelector(`[data-color-value="${key}"]`);
+    if (valueLabel) {
+      valueLabel.textContent = value ? value.toUpperCase() : "N/A";
+    }
+  };
+
+  const applyDraftSettings = () => {
+    customization.applySettings(draftSettings);
+  };
+
   const populateForm = () => {
-    if (!customizationForm) return;
-    const settings = customization.getSettings();
-    const { colors, fonts, logo } = settings;
+    draftSettings = customization.mergeWithDefaults(customization.getSettings());
+    const { colors, fonts, logo } = draftSettings;
 
-    const assignValue = (selector, value) => {
-      const field = customizationForm.querySelector(selector);
-      if (field) {
-        field.value = value ?? "";
-      }
-    };
+    colorInputs.forEach((input) => {
+      const key = input.dataset.colorField;
+      const value = colors[key] || input.value || "#000000";
+      input.value = value;
+      updateColorPreview(key, value);
+    });
 
-    assignValue('input[name="color-primary"]', colors.primary);
-    assignValue('input[name="color-secondary"]', colors.secondary);
-    assignValue('input[name="color-accent"]', colors.accent);
-    assignValue('input[name="color-background"]', colors.background);
-    assignValue('input[name="color-text"]', colors.text);
-    assignValue('input[name="color-muted"]', colors.muted);
-    assignValue('input[name="font-base"]', fonts.base);
-    assignValue('input[name="font-heading"]', fonts.heading);
-    assignValue('input[name="logo-text"]', logo.text ?? "");
-    assignValue('input[name="logo-alt"]', logo.alt ?? "");
+    fontInputs.forEach((input) => {
+      const key = input.dataset.fontField;
+      input.value = fonts[key] || "";
+    });
 
-    logoImageData = typeof logo.image === "string" ? logo.image : "";
+    logoInputs.forEach((input) => {
+      const key = input.dataset.logoField;
+      input.value = logo[key] ?? "";
+    });
+
     if (logoFileInput) {
       logoFileInput.value = "";
     }
+
     updateLogoPreview();
   };
 
-  const extractColors = (formData) => ({
-    primary: String(formData.get("color-primary") || "").trim(),
-    secondary: String(formData.get("color-secondary") || "").trim(),
-    accent: String(formData.get("color-accent") || "").trim(),
-    background: String(formData.get("color-background") || "").trim(),
-    text: String(formData.get("color-text") || "").trim(),
-    muted: String(formData.get("color-muted") || "").trim()
+  colorInputs.forEach((input) => {
+    const key = input.dataset.colorField;
+    input.addEventListener("input", () => {
+      const value = input.value;
+      draftSettings.colors[key] = value;
+      updateColorPreview(key, value);
+      applyDraftSettings();
+    });
+    input.addEventListener("change", indicatePreviewUpdated);
   });
 
-  const extractFonts = (formData) => ({
-    base: String(formData.get("font-base") || "").trim(),
-    heading: String(formData.get("font-heading") || "").trim()
+  fontInputs.forEach((input) => {
+    const key = input.dataset.fontField;
+    input.addEventListener("input", () => {
+      draftSettings.fonts[key] = input.value;
+      applyDraftSettings();
+      indicatePreviewUpdated();
+    });
+  });
+
+  logoInputs.forEach((input) => {
+    const key = input.dataset.logoField;
+    input.addEventListener("input", () => {
+      draftSettings.logo[key] = input.value;
+      applyDraftSettings();
+      indicatePreviewUpdated();
+    });
   });
 
   const handleCustomizationSubmit = (event) => {
     event.preventDefault();
-    if (!customizationForm) return;
-    const formData = new FormData(customizationForm);
-
-    const nextSettings = {
-      colors: extractColors(formData),
-      fonts: extractFonts(formData),
-      logo: {
-        text: String(formData.get("logo-text") || ""),
-        alt: String(formData.get("logo-alt") || ""),
-        image: logoImageData
-      }
-    };
-
-    customization.saveSettings(nextSettings);
-    showFeedback("Param\u00E8tres enregistr\u00E9s et appliqu\u00E9s.", "success");
+    const saved = customization.saveSettings(draftSettings);
+    draftSettings = customization.mergeWithDefaults(saved);
+    populateForm();
+    showFeedback("Paramètres enregistrés et appliqués.", "success");
   };
 
   const handleLogoFileChange = (event) => {
@@ -110,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const file = input.files[0];
     if (!file.type.startsWith("image/")) {
-      showFeedback("Veuillez s\u00E9lectionner un fichier image (PNG, JPG, SVG...).", "error");
+      showFeedback("Veuillez sélectionner un fichier image (PNG, JPG, SVG...).", "error");
       input.value = "";
       return;
     }
@@ -119,37 +159,40 @@ document.addEventListener("DOMContentLoaded", () => {
     reader.onload = () => {
       const result = reader.result;
       if (typeof result === "string") {
-        logoImageData = result;
+        if (!draftSettings.logo) {
+          draftSettings.logo = {};
+        }
+        draftSettings.logo.image = result;
         updateLogoPreview();
-        showFeedback("Logo import\u00E9 avec succ\u00E8s.", "success");
+        applyDraftSettings();
+        indicatePreviewUpdated();
       }
     };
     reader.onerror = () => {
-      showFeedback("Impossible de lire le fichier s\u00E9lectionn\u00E9.", "error");
+      showFeedback("Impossible de lire le fichier sélectionné.", "error");
     };
     reader.readAsDataURL(file);
   };
 
   const handleClearLogo = () => {
-    logoImageData = "";
+    if (!draftSettings.logo) {
+      draftSettings.logo = {};
+    }
+    draftSettings.logo.image = "";
+    updateLogoPreview();
+    applyDraftSettings();
     if (logoFileInput) {
       logoFileInput.value = "";
     }
-    updateLogoPreview();
-    showFeedback("Logo supprim\u00E9. Le texte sera affich\u00E9.", "info");
+    showFeedback("Logo supprimé. Le texte sera affiché.", "info");
   };
 
   const handleReset = () => {
-    const defaults = customization.resetSettings();
-    logoImageData = defaults.logo.image;
+    customization.resetSettings();
     populateForm();
-    showFeedback("Param\u00E8tres r\u00E9initialis\u00E9s.", "success");
+    applyDraftSettings();
+    showFeedback("Paramètres réinitialisés.", "success");
   };
-
-  if (!customizationForm) {
-    showFeedback("Formulaire introuvable.", "error");
-    return;
-  }
 
   customizationForm.addEventListener("submit", handleCustomizationSubmit);
 
@@ -166,5 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   populateForm();
-  showFeedback("Param\u00E8tres charg\u00E9s. Vous pouvez personnaliser le site.", "success");
+  showFeedback("Paramètres chargés. Vous pouvez personnaliser le site.", "success");
+  applyDraftSettings();
+  updateLogoPreview();
 });
