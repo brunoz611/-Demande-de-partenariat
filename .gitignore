@@ -1,0 +1,14 @@
+## Environment configuration
+.env
+.env.*
+api/.env
+api/.env.*
+
+## Dependency directories
+node_modules/
+
+## Local tooling / deployment artifacts
+.vercel
+dist/
+out/
+build/

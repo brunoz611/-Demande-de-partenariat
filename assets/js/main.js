@@ -1,5 +1,193 @@
+const SITE_CUSTOMIZATION_KEY = "siteCustomization.v1";
+const SITE_CUSTOMIZATION_DEFAULTS = Object.freeze({
+  colors: {
+    primary: "#ff6b35",
+    primaryDark: "#e35d2d",
+    secondary: "#2f4858",
+    accent: "#ffbc42",
+    background: "#fffdf8",
+    text: "#2c2c2c",
+    muted: "#5f6c7b"
+  },
+  fonts: {
+    base: '"Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
+    heading: '"Playfair Display", "Times New Roman", serif'
+  },
+  logo: {
+    text: "Magali & Ghislain",
+    alt: "Magali & Ghislain",
+    image: ""
+  }
+});
+
+const mergeCustomizationSettings = (settings = {}) => {
+  const result = {
+    colors: { ...SITE_CUSTOMIZATION_DEFAULTS.colors },
+    fonts: { ...SITE_CUSTOMIZATION_DEFAULTS.fonts },
+    logo: { ...SITE_CUSTOMIZATION_DEFAULTS.logo }
+  };
+
+  if (settings && typeof settings === "object") {
+    if (settings.colors && typeof settings.colors === "object") {
+      Object.entries(settings.colors).forEach(([key, value]) => {
+        if (key in result.colors && typeof value === "string" && value.trim()) {
+          result.colors[key] = value.trim();
+        }
+      });
+    }
+    if (settings.fonts && typeof settings.fonts === "object") {
+      Object.entries(settings.fonts).forEach(([key, value]) => {
+        if (key in result.fonts && typeof value === "string" && value.trim()) {
+          result.fonts[key] = value.trim();
+        }
+      });
+    }
+    if (settings.logo && typeof settings.logo === "object") {
+      if (typeof settings.logo.text === "string") {
+        result.logo.text = settings.logo.text;
+      }
+      if (typeof settings.logo.alt === "string" && settings.logo.alt.trim()) {
+        result.logo.alt = settings.logo.alt.trim();
+      }
+      if (typeof settings.logo.image === "string") {
+        result.logo.image = settings.logo.image;
+      }
+    }
+  }
+
+  return result;
+};
+
+const readStoredCustomization = () => {
+  try {
+    const raw = localStorage.getItem(SITE_CUSTOMIZATION_KEY);
+    if (!raw) {
+      return {};
+    }
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (error) {
+    console.warn("Impossible de lire les pr\u00E9f\u00E9rences de personnalisation :", error);
+    return {};
+  }
+};
+
+const deriveDarkerColor = (hex) => {
+  if (typeof hex !== "string") return hex;
+  const cleaned = hex.trim();
+  const match = /^#?([0-9a-f]{6})$/i.exec(cleaned);
+  if (!match) return cleaned;
+  const value = parseInt(match[1], 16);
+  const factor = 0.85;
+  const r = Math.max(0, Math.min(255, Math.round(((value >> 16) & 0xff) * factor)));
+  const g = Math.max(0, Math.min(255, Math.round(((value >> 8) & 0xff) * factor)));
+  const b = Math.max(0, Math.min(255, Math.round((value & 0xff) * factor)));
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b
+    .toString(16)
+    .padStart(2, "0")}`;
+};
+
+const applyCustomizationToDom = (settings) => {
+  const resolved = mergeCustomizationSettings(
+    settings === undefined ? readStoredCustomization() : settings
+  );
+
+  const root = document.documentElement;
+  const { colors, fonts, logo } = resolved;
+
+  try {
+    root.style.setProperty("--color-primary", colors.primary);
+    root.style.setProperty(
+      "--color-primary-dark",
+      colors.primaryDark || deriveDarkerColor(colors.primary)
+    );
+    root.style.setProperty("--color-secondary", colors.secondary);
+    root.style.setProperty("--color-accent", colors.accent);
+    root.style.setProperty("--color-bg", colors.background);
+    root.style.setProperty("--color-text", colors.text);
+    root.style.setProperty("--color-muted", colors.muted);
+    root.style.setProperty("--font-base", fonts.base);
+    root.style.setProperty("--font-heading", fonts.heading);
+  } catch (error) {
+    console.warn("Impossible d'appliquer les couleurs personnalis\u00E9es :", error);
+  }
+
+  document.querySelectorAll(".logo").forEach((logoElement) => {
+    if (!(logoElement instanceof HTMLElement)) return;
+    if (!logoElement.dataset.defaultText) {
+      logoElement.dataset.defaultText = logoElement.textContent
+        ? logoElement.textContent.trim()
+        : SITE_CUSTOMIZATION_DEFAULTS.logo.text;
+    }
+    const defaultText =
+      logoElement.dataset.defaultText || SITE_CUSTOMIZATION_DEFAULTS.logo.text;
+    const displayText =
+      typeof logo.text === "string" && logo.text.trim() ? logo.text.trim() : defaultText;
+    const imageSource = typeof logo.image === "string" && logo.image ? logo.image : "";
+    const imageAlt =
+      typeof logo.alt === "string" && logo.alt.trim() ? logo.alt.trim() : displayText;
+
+    if (imageSource) {
+      logoElement.classList.add("has-image");
+      logoElement.innerHTML = "";
+      const img = document.createElement("img");
+      img.className = "logo-image";
+      img.src = imageSource;
+      img.alt = imageAlt || displayText || defaultText;
+      logoElement.appendChild(img);
+
+      if (displayText) {
+        const span = document.createElement("span");
+        span.className = "logo-text";
+        span.textContent = displayText;
+        logoElement.appendChild(span);
+      }
+    } else {
+      logoElement.classList.remove("has-image");
+      logoElement.textContent = displayText || defaultText;
+    }
+  });
+
+  return resolved;
+};
+
+const saveCustomizationSettings = (settings) => {
+  const prepared = mergeCustomizationSettings(settings);
+  try {
+    localStorage.setItem(SITE_CUSTOMIZATION_KEY, JSON.stringify(prepared));
+  } catch (error) {
+    console.warn("Impossible d'enregistrer les pr\u00E9f\u00E9rences de personnalisation :", error);
+  }
+  return applyCustomizationToDom(prepared);
+};
+
+const resetCustomizationSettings = () => {
+  try {
+    localStorage.removeItem(SITE_CUSTOMIZATION_KEY);
+  } catch (error) {
+    console.warn("Impossible de r\u00E9initialiser les pr\u00E9f\u00E9rences de personnalisation :", error);
+  }
+  return applyCustomizationToDom(SITE_CUSTOMIZATION_DEFAULTS);
+};
+
+const getCustomizationSettings = () => mergeCustomizationSettings(readStoredCustomization());
+
+window.siteCustomization = window.siteCustomization || {};
+Object.assign(window.siteCustomization, {
+  key: SITE_CUSTOMIZATION_KEY,
+  defaultSettings: SITE_CUSTOMIZATION_DEFAULTS,
+  getSettings: getCustomizationSettings,
+  mergeWithDefaults: mergeCustomizationSettings,
+  applySettings: applyCustomizationToDom,
+  saveSettings: saveCustomizationSettings,
+  resetSettings: resetCustomizationSettings,
+  readStoredSettings: readStoredCustomization
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const body = document.body;
+
+  applyCustomizationToDom();
 
   // Navigation burger toggle for mobile
   const navToggle = document.querySelector(".nav-toggle");

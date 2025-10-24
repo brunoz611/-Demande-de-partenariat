@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interface d'administration pour personnaliser le style du site Magali &amp; Ghislain.">
+  <title>Administration du site</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="admin-page">
+  <main class="admin-container">
+    <section class="admin-card">
+      <h1>Administration du site</h1>
+      <p class="admin-intro">Personnalisez les couleurs, polices et le logo du site. L'acc&egrave;s &agrave; cette page est prot&eacute;g&eacute; c&ocirc;t&eacute; serveur via Basic Auth.</p>
+      <p class="admin-feedback" data-admin-feedback hidden></p>
+
+      <form class="form admin-form" data-admin-form>
+        <fieldset class="admin-fieldset">
+          <legend>Palette de couleurs</legend>
+          <div class="form-row">
+            <label class="form-field">
+              <span>Couleur principale</span>
+              <input type="color" name="color-primary" required>
+            </label>
+            <label class="form-field">
+              <span>Couleur secondaire</span>
+              <input type="color" name="color-secondary" required>
+            </label>
+          </div>
+          <div class="form-row">
+            <label class="form-field">
+              <span>Couleur d'accent</span>
+              <input type="color" name="color-accent" required>
+            </label>
+            <label class="form-field">
+              <span>Couleur de fond</span>
+              <input type="color" name="color-background" required>
+            </label>
+          </div>
+          <div class="form-row">
+            <label class="form-field">
+              <span>Couleur du texte</span>
+              <input type="color" name="color-text" required>
+            </label>
+            <label class="form-field">
+              <span>Couleur att&eacute;nu&eacute;e</span>
+              <input type="color" name="color-muted" required>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="admin-fieldset">
+          <legend>Typographies</legend>
+          <div class="form-row">
+            <label class="form-field">
+              <span>Police principale</span>
+              <input type="text" name="font-base" placeholder='"Segoe UI", "Roboto", sans-serif'>
+            </label>
+            <label class="form-field">
+              <span>Police des titres</span>
+              <input type="text" name="font-heading" placeholder='"Playfair Display", serif'>
+            </label>
+          </div>
+          <small>Pour utiliser des polices externes, ajoutez-les aussi dans votre feuille de style.</small>
+        </fieldset>
+
+        <fieldset class="admin-fieldset">
+          <legend>Logo</legend>
+          <div class="form-row">
+            <label class="form-field">
+              <span>Texte du logo</span>
+              <input type="text" name="logo-text" placeholder="Nom affich&eacute; dans la navigation">
+            </label>
+            <label class="form-field">
+              <span>Texte alternatif</span>
+              <input type="text" name="logo-alt" placeholder="Description pour l'accessibilit&eacute;">
+            </label>
+          </div>
+          <div class="admin-logo-preview">
+            <label class="form-field">
+              <span>Image du logo</span>
+              <input type="file" name="logo-file" accept="image/*">
+              <small>PNG, JPG ou SVG recommand&eacute;s. L'image est stock&eacute;e localement dans votre navigateur.</small>
+            </label>
+            <img data-logo-preview alt="Aper&ccedil;u du logo" hidden>
+          </div>
+          <div class="admin-form-actions">
+            <button class="btn ghost" type="button" data-admin-action="clear-logo">Supprimer le logo</button>
+          </div>
+        </fieldset>
+
+        <div class="admin-form-actions">
+          <button class="btn ghost" type="button" data-admin-action="reset">R&eacute;initialiser</button>
+          <button class="btn primary" type="submit">Enregistrer</button>
+        </div>
+      </form>
+
+      <p class="admin-hint">Acc&egrave;s prot&eacute;g&eacute; via Basic Auth. D&eacute;finissez les variables d'environnement <code>ADMIN_USER</code> et <code>ADMIN_PASSWORD</code> dans le projet Vercel pour autoriser l'acc&egrave;s.</p>
+    </section>
+  </main>
+
+  <script defer src="assets/js/main.js"></script>
+  <script defer src="assets/js/admin.js"></script>
+</body>
+</html>

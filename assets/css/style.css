@@ -88,6 +88,27 @@ a:focus {
   font-family: var(--font-heading);
   font-size: 1.4rem;
   color: var(--color-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.logo.has-image {
+  font-family: var(--font-base);
+  font-size: 1.05rem;
+}
+
+.logo-image {
+  display: block;
+  max-height: 56px;
+  width: auto;
+}
+
+.logo-text {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  line-height: 1.2;
 }
 
 .site-nav ul {
@@ -647,6 +668,108 @@ article,
 .cookie-table thead {
   background-color: rgba(47, 72, 88, 0.08);
   font-weight: 600;
+}
+
+/* Admin dashboard */
+
+body.admin-page {
+  background-color: var(--color-bg);
+}
+
+.admin-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 4rem) 1.5rem;
+}
+
+.admin-card {
+  background: #ffffff;
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(2.25rem, 5vw, 3rem);
+  display: grid;
+  gap: 1.5rem;
+}
+
+.admin-card h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.5rem);
+}
+
+.admin-intro {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 1rem;
+}
+
+.admin-feedback {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.admin-feedback[data-state="error"] {
+  color: #d64545;
+}
+
+.admin-feedback[data-state="success"] {
+  color: #2d862d;
+}
+
+.admin-fieldset {
+  border: 1px solid rgba(47, 72, 88, 0.12);
+  border-radius: var(--radius-medium);
+  padding: 1.5rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.admin-fieldset legend {
+  font-weight: 600;
+  color: var(--color-secondary);
+  padding: 0 0.35rem;
+}
+
+.admin-form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.admin-form .form-row {
+  gap: 1.25rem;
+}
+
+.admin-form .form-field {
+  align-items: flex-start;
+}
+
+.admin-logo-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.admin-logo-preview img {
+  max-height: 96px;
+  width: auto;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--color-border);
+  background: #ffffff;
+  padding: 0.75rem;
+}
+
+.admin-hint {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.admin-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
 }
 
 @media (max-width: 880px) {
