@@ -81,7 +81,8 @@ a:focus {
   align-items: center;
   justify-content: space-between;
   padding: 1rem clamp(1.5rem, 5vw, 4rem);
-  padding-top: calc(1rem + var(--safe-area-top));
+  padding-top: calc(1.25rem + var(--safe-area-top));
+  padding-bottom: 1.25rem;
 }
 
 .logo {
@@ -193,7 +194,7 @@ section {
   gap: 3rem;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   align-items: center;
-  padding-top: clamp(4rem, 8vw, 6rem);
+  padding-top: clamp(5rem, 10vw, 7rem);
 }
 
 .hero {
@@ -866,6 +867,7 @@ body.admin-page {
   .hero,
   .subpage-hero {
     grid-template-columns: 1fr;
+    padding-top: clamp(5.5rem, 16vw, 7rem);
   }
 
   .timeline li::before {
@@ -880,6 +882,8 @@ body.admin-page {
 
   .site-header {
     padding-inline: 1.25rem;
+    padding-top: calc(1.75rem + var(--safe-area-top));
+    padding-bottom: 1.75rem;
   }
 
   .founders {
