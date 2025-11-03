@@ -7,7 +7,7 @@ Ce dossier contient la base du site vitrine responsive destiné à l'entreprise 
 - `index.html` – Accueil, présentation du duo fondateur et de leur univers gourmand.
 - `activite-pro-ateliers.html` – Ateliers de cuisine participatifs pour entreprises.
 - `activite-pro-traiteur.html` – Offres traiteur / cocktail.
-- `activite-particulier-plats.html` – Plats à emporter avec inscription newsletter « plat de la semaine ».
+- `activite-particulier-plats.html` - Plat de la semaine avec inscription newsletter « plat de la semaine ».
 - `activite-particulier-evenements.html` – Événements Sport & Cocktail healthy.
 - `galerie.html` – Galerie photo alimentée depuis un fichier de données.
 - `contact.html` – Formulaire de contact (nom, prénom, email, téléphone, activités, message).
@@ -22,7 +22,7 @@ Ce dossier contient la base du site vitrine responsive destiné à l'entreprise 
 - Navigation cohérente et réutilisable sur toutes les pages.
 - Footer avec mentions légales, politique de confidentialité, gestion des cookies.
 - Design responsive (mobile, tablette, desktop) et menu burger.
-- Popup newsletter sur la page Plats à emporter.
+- Popup newsletter sur la page Plat de la semaine.
 - Meta-données SEO de base (title, description, Open Graph).
 - Bannière cookies avec stockage du consentement dans `localStorage`.
 - Galerie générée dynamiquement à partir de `assets/js/gallery-data.js`.
@@ -32,9 +32,18 @@ Ce dossier contient la base du site vitrine responsive destiné à l'entreprise 
 - Remplacez les textes d’introduction par votre storytelling dans chaque `<section>`.
 - Ajoutez vos photos dans `assets/images` puis mettez à jour `assets/js/gallery-data.js` (chemin du fichier, titre, description) pour alimenter automatiquement la galerie.
 - Complétez les pages `mentions-legales.html`, `politique-confidentialite.html` et `gestion-cookies.html` avec vos informations officielles (raison sociale, SIRET, hébergeur, etc.).
-- Dans `assets/js/main.js`, remplacez les messages `alert` (newsletter et formulaire de contact) par l’intégration de votre outil (Brevo, Mailchimp, Formspree, Airtable…).
+- Dans `assets/js/main.js`, le formulaire de contact envoie désormais les données vers l’API `/api/contact` qui transmet un email via Nodemailer (SMTP). Les formulaires newsletter utilisent toujours un message d’alerte.
 - Ajoutez vos identifiants de réseaux sociaux dans le header/footer si besoin.
 - Remplacez l’URL `https://www.votredomaine.fr/` et l’image Open Graph dans `index.html`.
+
+## Envoi d'e-mails
+
+Le formulaire de contact s’appuie sur l’API `/api/contact` qui utilise Nodemailer et un relais SMTP.
+
+1. Copiez `api/.env.example` vers `api/.env`.
+2. Renseignez vos identifiants SMTP : `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` (et éventuellement `SMTP_SECURE`, `SMTP_FROM`, `CONTACT_RECIPIENT`).
+3. Déployez en exposant les mêmes variables d’environnement sur votre hébergeur (Vercel → Project Settings → Environment Variables).
+4. Après installation (`npm install`), vous pouvez tester en local avec `vercel dev` ou tout autre runner serverless compatible.
 
 ## SEO & RGPD
 

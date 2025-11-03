@@ -251,12 +251,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Newsletter modal interactions
-  const newsletterModal = document.querySelector(".newsletter-modal");
-  let closeNewsletterModal = null;
-  if (newsletterModal) {
-    newsletterModal.setAttribute("tabindex", "-1");
-    const openButtons = document.querySelectorAll("[data-open-newsletter]");
-    const closeButton = newsletterModal.querySelector("[data-close-newsletter]");
+  const newsletterModals = Array.from(document.querySelectorAll("[data-newsletter-modal]"));
+  const newsletterClosers = new Map();
+
+  newsletterModals.forEach((modal) => {
+    if (!(modal instanceof HTMLElement)) return;
+
+    const modalId = modal.dataset.newsletterModal || "";
+    modal.setAttribute("tabindex", "-1");
+
     const focusableSelectors = [
       "a[href]",
       "button:not([disabled])",
@@ -266,9 +269,11 @@ document.addEventListener("DOMContentLoaded", () => {
       '[tabindex]:not([tabindex="-1"])'
     ];
 
+    const getFocusableElements = () => modal.querySelectorAll(focusableSelectors.join(", "));
+
     const trapFocus = (event) => {
       if (event.key !== "Tab") return;
-      const focusableElements = newsletterModal.querySelectorAll(focusableSelectors.join(", "));
+      const focusableElements = Array.from(getFocusableElements());
       if (!focusableElements.length) return;
 
       const firstElement = focusableElements[0];
@@ -291,44 +296,57 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
 
+    const openButtonsSelector = modalId
+      ? `[data-open-newsletter="${modalId}"]`
+      : "[data-open-newsletter]";
+    const openButtons = document.querySelectorAll(openButtonsSelector);
+    const closeButton = modal.querySelector("[data-close-newsletter]");
+
     const openModal = () => {
-      if (!newsletterModal.hasAttribute("hidden")) return;
-      newsletterModal.removeAttribute("hidden");
+      if (!modal.hasAttribute("hidden")) return;
+
+      newsletterModals.forEach((otherModal) => {
+        if (otherModal === modal) return;
+        const otherClose = newsletterClosers.get(otherModal);
+        if (typeof otherClose === "function") {
+          otherClose();
+        }
+      });
+
+      modal.removeAttribute("hidden");
       body.classList.add("no-scroll");
-      const firstInput = newsletterModal.querySelector("input, button, select, textarea");
+      const firstInput = modal.querySelector("input, button, select, textarea");
       setTimeout(() => {
-        (firstInput instanceof HTMLElement ? firstInput : newsletterModal).focus();
+        (firstInput instanceof HTMLElement ? firstInput : modal).focus();
       }, 10);
       document.addEventListener("keydown", handleKeyDown);
     };
 
     const closeModal = () => {
-      if (newsletterModal.hasAttribute("hidden")) return;
-      newsletterModal.setAttribute("hidden", "");
-      body.classList.remove("no-scroll");
+      if (modal.hasAttribute("hidden")) return;
+      modal.setAttribute("hidden", "");
+      if (!newsletterModals.some((instance) => !instance.hasAttribute("hidden"))) {
+        body.classList.remove("no-scroll");
+      }
       document.removeEventListener("keydown", handleKeyDown);
     };
 
-    closeNewsletterModal = closeModal;
+    newsletterClosers.set(modal, closeModal);
 
     openButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        openModal();
-      });
+      button.addEventListener("click", openModal);
     });
 
     if (closeButton) {
-      closeButton.addEventListener("click", () => {
-        closeModal();
-      });
+      closeButton.addEventListener("click", closeModal);
     }
 
-    newsletterModal.addEventListener("click", (event) => {
-      if (event.target === newsletterModal) {
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
         closeModal();
       }
     });
-  }
+  });
 
   // Gallery rendering from external data file
   const galleryContainer = document.querySelector("[data-gallery]");
@@ -369,25 +387,84 @@ document.addEventListener("DOMContentLoaded", () => {
   // Simple form handling (placeholder until back-end integration)
   const forms = document.querySelectorAll("form[data-form]");
   forms.forEach((form) => {
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       if (!form.checkValidity()) {
-        // Trigger native validation UI
         form.reportValidity();
         event.preventDefault();
         return;
       }
 
       event.preventDefault();
-      const formType = form.dataset.form;
-      if (formType === "newsletter") {
-        alert("Merci ! Vous recevrez bientôt le plat de la semaine.");
-        form.reset();
-        if (typeof closeNewsletterModal === "function") {
-          closeNewsletterModal();
+      const formType = form.dataset.form || "";
+      const successMessage =
+        form.dataset.successMessage ||
+        (formType === "newsletter"
+          ? "Merci pour votre inscription !"
+          : formType === "contact"
+          ? "Merci pour votre message ! Nous reviendrons vers vous sous 48h ouvrées."
+          : "Merci !");
+
+      if (formType === "contact") {
+        const formData = new FormData(form);
+        const submitButton = form.querySelector("[type='submit']");
+        const payload = {
+          lastname: formData.get("lastname") || "",
+          firstname: formData.get("firstname") || "",
+          company: formData.get("company") || "",
+          email: formData.get("email") || "",
+          phone: formData.get("phone") || "",
+          activity: formData.getAll("activity").filter((value) => value),
+          message: formData.get("message") || "",
+          consent: formData.get("consent") === "on"
+        };
+
+        try {
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.setAttribute("data-loading", "true");
+          }
+
+          const response = await fetch("/api/contact", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            const message = await response.text();
+            throw new Error(`Échec de l'envoi (${response.status}) : ${message || "erreur inconnue"}`);
+          }
+
+          alert(successMessage);
+          form.reset();
+        } catch (error) {
+          console.error("Erreur lors de l'envoi du formulaire de contact :", error);
+          alert(
+            "Nous n'avons pas pu envoyer votre message. Merci de réessayer dans quelques minutes ou de contacter gchamonard@yahoo.com directement."
+          );
+        } finally {
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.removeAttribute("data-loading");
+          }
         }
-      } else if (formType === "contact") {
-        alert("Merci pour votre message ! Nous reviendrons vers vous sous 48h ouvrées.");
-        form.reset();
+        return;
+      }
+
+      alert(successMessage);
+      form.reset();
+
+      if (formType === "newsletter") {
+        const modalElement = form.closest("[data-newsletter-modal]");
+        if (modalElement) {
+          const closeModal = newsletterClosers.get(modalElement);
+          if (typeof closeModal === "function") {
+            closeModal();
+          }
+        }
       }
     });
   });
