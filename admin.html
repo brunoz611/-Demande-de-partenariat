@@ -3,127 +3,595 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Interface d'administration pour personnaliser le style du site Magali &amp; Ghislain.">
-  <title>Administration du site</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <title>Délicissime - Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+    
+    .admin-header {
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .admin-header h1 {
+      font-size: 28px;
+      font-weight: 600;
+    }
+    
+    .admin-header-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-primary {
+      background: #d4a373;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #c5944a;
+    }
+    
+    .btn-secondary {
+      background: #f5f5f5;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    
+    .btn-secondary:hover {
+      background: #e8e8e8;
+    }
+    
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+    }
+    
+    .message {
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    
+    .message.show {
+      display: block;
+    }
+    
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ddd;
+    }
+    
+    .tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      color: #666;
+      transition: all 0.2s;
+    }
+    
+    .tab-btn:hover {
+      color: #333;
+    }
+    
+    .tab-btn.active {
+      color: #d4a373;
+      border-bottom-color: #d4a373;
+    }
+    
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.2s;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .tab-panel {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #d4a373;
+      box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1);
+    }
+    
+    .color-input-group {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .color-input-group input[type="color"] {
+      width: 60px;
+      height: 60px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    .color-preview {
+      flex: 1;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 5px;
+      font-size: 14px;
+      word-break: break-all;
+    }
+    
+    .image-preview {
+      margin: 15px 0;
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 5px;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .admin-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
-<body class="admin-page">
-  <main class="admin-container">
-    <section class="admin-card">
-      <h1>Administration du site</h1>
-      <p class="admin-intro">Personnalisez les couleurs, polices et le logo du site. L'acc&egrave;s &agrave; cette page est prot&eacute;g&eacute; c&ocirc;t&eacute; serveur via Basic Auth.</p>
-      <p class="admin-feedback" data-admin-feedback hidden></p>
-
-      <form class="form admin-form" data-admin-form>
-        <fieldset class="admin-fieldset">
-          <legend>Palette de couleurs</legend>
-          <div class="form-row">
-            <label class="form-field">
-              <span>Couleur principale</span>
-              <div class="admin-color-control">
-                <input type="color" name="color-primary" data-color-field="primary" required>
-                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="primary"></span>
-                <span class="admin-color-value" data-color-value="primary">N/A</span>
-              </div>
-            </label>
-            <label class="form-field">
-              <span>Couleur secondaire</span>
-              <div class="admin-color-control">
-                <input type="color" name="color-secondary" data-color-field="secondary" required>
-                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="secondary"></span>
-                <span class="admin-color-value" data-color-value="secondary">N/A</span>
-              </div>
-            </label>
+<body>
+  <div class="admin-header">
+    <h1>Délicissime Admin</h1>
+    <div class="admin-header-actions">
+      <a href="/" class="btn btn-secondary">Retour au site</a>
+      <button class="btn btn-secondary" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+  
+  <div class="admin-container">
+    <div id="message" class="message"></div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="colors">Couleurs</button>
+      <button class="tab-btn" data-tab="images">Photos</button>
+      <button class="tab-btn" data-tab="content">Textes</button>
+    </div>
+    
+    <!-- Couleurs Tab -->
+    <div id="colors" class="tab-content active">
+      <div class="tab-panel">
+        <h2 style="margin-bottom: 20px;">Personnaliser les couleurs</h2>
+        
+        <div class="form-group">
+          <label>Couleur Principale</label>
+          <div class="color-input-group">
+            <input type="color" id="color-primary" value="#d4a373">
+            <div class="color-preview" id="preview-primary">#d4a373</div>
           </div>
-          <div class="form-row">
-            <label class="form-field">
-              <span>Couleur d'accent</span>
-              <div class="admin-color-control">
-                <input type="color" name="color-accent" data-color-field="accent" required>
-                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="accent"></span>
-                <span class="admin-color-value" data-color-value="accent">N/A</span>
-              </div>
-            </label>
-            <label class="form-field">
-              <span>Couleur de fond</span>
-              <div class="admin-color-control">
-                <input type="color" name="color-background" data-color-field="background" required>
-                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="background"></span>
-                <span class="admin-color-value" data-color-value="background">N/A</span>
-              </div>
-            </label>
-          </div>
-          <div class="form-row">
-            <label class="form-field">
-              <span>Couleur du texte</span>
-              <div class="admin-color-control">
-                <input type="color" name="color-text" data-color-field="text" required>
-                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="text"></span>
-                <span class="admin-color-value" data-color-value="text">N/A</span>
-              </div>
-            </label>
-            <label class="form-field">
-              <span>Couleur att&eacute;nu&eacute;e</span>
-              <div class="admin-color-control">
-                <input type="color" name="color-muted" data-color-field="muted" required>
-                <span class="admin-color-swatch" aria-hidden="true" data-color-preview="muted"></span>
-                <span class="admin-color-value" data-color-value="muted">N/A</span>
-              </div>
-            </label>
-          </div>
-        </fieldset>
-
-        <fieldset class="admin-fieldset">
-          <legend>Typographies</legend>
-          <div class="form-row">
-            <label class="form-field">
-              <span>Police principale</span>
-              <input type="text" name="font-base" data-font-field="base" placeholder='"Segoe UI", "Roboto", sans-serif'>
-            </label>
-            <label class="form-field">
-              <span>Police des titres</span>
-              <input type="text" name="font-heading" data-font-field="heading" placeholder='"Playfair Display", serif'>
-            </label>
-          </div>
-          <small>Pour utiliser des polices externes, ajoutez-les aussi dans votre feuille de style.</small>
-        </fieldset>
-
-        <fieldset class="admin-fieldset">
-          <legend>Logo</legend>
-          <div class="form-row">
-            <label class="form-field">
-              <span>Texte du logo</span>
-              <input type="text" name="logo-text" data-logo-field="text" placeholder="Nom affich&eacute; dans la navigation">
-            </label>
-            <label class="form-field">
-              <span>Texte alternatif</span>
-              <input type="text" name="logo-alt" data-logo-field="alt" placeholder="Description pour l'accessibilit&eacute;">
-            </label>
-          </div>
-          <div class="admin-logo-preview">
-            <label class="form-field">
-              <span>Image du logo</span>
-              <input type="file" name="logo-file" accept="image/*">
-              <small>PNG, JPG ou SVG recommand&eacute;s. L'image est stock&eacute;e localement dans votre navigateur.</small>
-            </label>
-            <img data-logo-preview alt="Aper&ccedil;u du logo" hidden>
-          </div>
-          <div class="admin-form-actions">
-            <button class="btn ghost" type="button" data-admin-action="clear-logo">Supprimer le logo</button>
-          </div>
-        </fieldset>
-
-        <div class="admin-form-actions">
-          <button class="btn ghost" type="button" data-admin-action="reset">R&eacute;initialiser</button>
-          <button class="btn primary" type="submit">Enregistrer</button>
         </div>
-      </form>
+        
+        <div class="form-group">
+          <label>Couleur Secondaire</label>
+          <div class="color-input-group">
+            <input type="color" id="color-secondary" value="#f5e6d3">
+            <div class="color-preview" id="preview-secondary">#f5e6d3</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Couleur d'Accent</label>
+          <div class="color-input-group">
+            <input type="color" id="color-accent" value="#8b6f47">
+            <div class="color-preview" id="preview-accent">#8b6f47</div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveColors()">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Photos Tab -->
+    <div id="images" class="tab-content">
+      <div class="tab-panel">
+        <h2 style="margin-bottom: 20px;">Gérer les photos</h2>
+        
+        <div class="form-group">
+          <label>Logo</label>
+          <input type="text" id="image-logo" placeholder="URL de l'image du logo">
+          <img id="preview-logo" class="image-preview" style="display:none;">
+        </div>
+        
+        <div class="form-group">
+          <label>Photo Hero</label>
+          <input type="text" id="image-hero" placeholder="URL de la photo hero">
+          <img id="preview-hero" class="image-preview" style="display:none;">
+        </div>
+        
+        <div class="form-group">
+          <label>Photo de profil</label>
+          <input type="text" id="image-profile" placeholder="URL de la photo de profil">
+          <img id="preview-profile" class="image-preview" style="display:none;">
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveImages()">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Contenu Tab -->
+    <div id="content" class="tab-content">
+      <div class="tab-panel">
+        <h2 style="margin-bottom: 20px;">Modifier le texte du site</h2>
+        
+        <div class="form-group">
+          <label>Titre principal</label>
+          <input type="text" id="text-title" placeholder="Titre du site">
+        </div>
+        
+        <div class="form-group">
+          <label>Sous-titre</label>
+          <input type="text" id="text-subtitle" placeholder="Sous-titre">
+        </div>
+        
+        <div class="form-group">
+          <label>Texte de présentation</label>
+          <textarea id="text-description" placeholder="Texte de présentation" rows="5"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>Téléphone</label>
+          <input type="text" id="text-phone" placeholder="Numéro de téléphone">
+        </div>
+        
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="text-email" placeholder="Adresse email">
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveContent()">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <p class="admin-hint">Acc&egrave;s prot&eacute;g&eacute; via Basic Auth. D&eacute;finissez les variables d'environnement <code>ADMIN_USER</code> et <code>ADMIN_PASSWORD</code> dans le projet Vercel pour autoriser l'acc&egrave;s.</p>
-    </section>
-  </main>
-
-  <script defer src="assets/js/main.js"></script>
-  <script defer src="assets/js/admin.js"></script>
+  <script>
+    // Vérifie que l'utilisateur est authentifié
+    function checkAuth() {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        window.location.href = '/login.html';
+      }
+    }
+    
+    // Affiche un message
+    function showMessage(text, type) {
+      const msg = document.getElementById('message');
+      msg.textContent = text;
+      msg.className = `message show ${type}`;
+      setTimeout(() => {
+        msg.classList.remove('show');
+      }, 3000);
+    }
+    
+    // Gère les onglets
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabName = btn.dataset.tab;
+        
+        // Masquer tous les onglets
+        document.querySelectorAll('.tab-content').forEach(tab => {
+          tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('active');
+        });
+        
+        // Afficher l'onglet sélectionné
+        document.getElementById(tabName).classList.add('active');
+        btn.classList.add('active');
+        
+        // Charger les données
+        if (tabName === 'colors') loadColors();
+        if (tabName === 'images') loadImages();
+        if (tabName === 'content') loadContent();
+      });
+    });
+    
+    // Met à jour l'aperçu des couleurs
+    document.querySelectorAll('input[type="color"]').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const id = e.target.id.replace('color-', '');
+        document.getElementById(`preview-${id}`).textContent = e.target.value;
+      });
+    });
+    
+    // Met à jour les aperçus des images
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+      if (input.id.startsWith('image-')) {
+        input.addEventListener('change', (e) => {
+          const id = e.target.id.replace('image-', '');
+          const preview = document.getElementById(`preview-${id}`);
+          if (e.target.value) {
+            preview.src = e.target.value;
+            preview.onerror = () => {
+              preview.style.display = 'none';
+              showMessage('Image URL invalide', 'error');
+            };
+            preview.onload = () => {
+              preview.style.display = 'block';
+            };
+          } else {
+            preview.style.display = 'none';
+          }
+        });
+      }
+    });
+    
+    // Charge les couleurs
+    async function loadColors() {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch('/api/content/config', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.colors) {
+            document.getElementById('color-primary').value = data.colors.primary || '#d4a373';
+            document.getElementById('color-secondary').value = data.colors.secondary || '#f5e6d3';
+            document.getElementById('color-accent').value = data.colors.accent || '#8b6f47';
+            
+            document.getElementById('preview-primary').textContent = data.colors.primary || '#d4a373';
+            document.getElementById('preview-secondary').textContent = data.colors.secondary || '#f5e6d3';
+            document.getElementById('preview-accent').textContent = data.colors.accent || '#8b6f47';
+          }
+        }
+      } catch (err) {
+        showMessage('Erreur lors du chargement des couleurs', 'error');
+      }
+    }
+    
+    // Charge les images
+    async function loadImages() {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch('/api/content/config', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.images) {
+            document.getElementById('image-logo').value = data.images.logo || '';
+            document.getElementById('image-hero').value = data.images.hero || '';
+            document.getElementById('image-profile').value = data.images.profile || '';
+          }
+        }
+      } catch (err) {
+        showMessage('Erreur lors du chargement des images', 'error');
+      }
+    }
+    
+    // Charge le contenu
+    async function loadContent() {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch('/api/content/config', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.content) {
+            document.getElementById('text-title').value = data.content.title || '';
+            document.getElementById('text-subtitle').value = data.content.subtitle || '';
+            document.getElementById('text-description').value = data.content.description || '';
+            document.getElementById('text-phone').value = data.content.phone || '';
+            document.getElementById('text-email').value = data.content.email || '';
+          }
+        }
+      } catch (err) {
+        showMessage('Erreur lors du chargement du contenu', 'error');
+      }
+    }
+    
+    // Enregistre les couleurs
+    async function saveColors() {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const colors = {
+          primary: document.getElementById('color-primary').value,
+          secondary: document.getElementById('color-secondary').value,
+          accent: document.getElementById('color-accent').value
+        };
+        
+        const response = await fetch('/api/content/colors', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(colors)
+        });
+        
+        if (response.ok) {
+          showMessage('Couleurs enregistrées avec succès', 'success');
+        } else {
+          showMessage('Erreur lors de l\'enregistrement', 'error');
+        }
+      } catch (err) {
+        showMessage('Erreur lors de l\'enregistrement', 'error');
+      }
+    }
+    
+    // Enregistre les images
+    async function saveImages() {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const images = {
+          logo: document.getElementById('image-logo').value,
+          hero: document.getElementById('image-hero').value,
+          profile: document.getElementById('image-profile').value
+        };
+        
+        const response = await fetch('/api/content/image', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(images)
+        });
+        
+        if (response.ok) {
+          showMessage('Images enregistrées avec succès', 'success');
+        } else {
+          showMessage('Erreur lors de l\'enregistrement', 'error');
+        }
+      } catch (err) {
+        showMessage('Erreur lors de l\'enregistrement', 'error');
+      }
+    }
+    
+    // Enregistre le contenu
+    async function saveContent() {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const content = {
+          title: document.getElementById('text-title').value,
+          subtitle: document.getElementById('text-subtitle').value,
+          description: document.getElementById('text-description').value,
+          phone: document.getElementById('text-phone').value,
+          email: document.getElementById('text-email').value
+        };
+        
+        const response = await fetch('/api/content/content', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(content)
+        });
+        
+        if (response.ok) {
+          showMessage('Contenu enregistré avec succès', 'success');
+        } else {
+          showMessage('Erreur lors de l\'enregistrement', 'error');
+        }
+      } catch (err) {
+        showMessage('Erreur lors de l\'enregistrement', 'error');
+      }
+    }
+    
+    // Déconnexion
+    function logout() {
+      localStorage.removeItem('adminToken');
+      window.location.href = '/login.html';
+    }
+    
+    // Vérifie l'authentification au chargement
+    checkAuth();
+    
+    // Charge les couleurs au démarrage
+    loadColors();
+  </script>
 </body>
 </html>

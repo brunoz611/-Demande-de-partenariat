@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin – Délicissime</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #667eea;
+      --accent: #ff6b6b;
+      --bg: #f8f9fa;
+      --text: #1a1a1a;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #51cf66;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: white;
+      border-right: 1px solid var(--border);
+      padding: 1.5rem;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-user {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+
+    .sidebar-nav li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-nav a {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: var(--text-light);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .sidebar-nav a:hover,
+    .sidebar-nav a.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .sidebar-footer {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: #fee;
+      color: #c33;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background: #fdd;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 250px;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header h1 {
+      font-size: 2rem;
+    }
+
+    .status-badge {
+      background: #efe;
+      color: #3a3;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Sections */
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .form-group input[type="color"],
+    .form-group input[type="text"],
+    .form-group input[type="url"],
+    .form-group textarea {
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input[type="color"] {
+      height: 50px;
+      cursor: pointer;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      padding: 0.875rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: #efe;
+      color: #3a3;
+      border: 1px solid #9f9;
+    }
+
+    .message.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #f99;
+    }
+
+    .color-preview {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .color-swatch-box {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+    }
+
+    .color-swatch-label {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      text-align: center;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        margin: 0;
+      }
+
+      .sidebar-footer {
+        position: static;
+        margin-left: 1rem;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main-content {
+        padding: 1rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">Délicissime</div>
+        <div class="sidebar-user" id="userDisplay">Admin</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <li><a class="nav-link active" data-section="overview">📊 Aperçu</a></li>
+        <li><a class="nav-link" data-section="colors">🎨 Couleurs</a></li>
+        <li><a class="nav-link" data-section="images">🖼️ Images</a></li>
+        <li><a class="nav-link" data-section="content">📝 Contenu</a></li>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" id="logoutBtn">Déconnexion</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="header">
+        <h1 id="sectionTitle">Tableau de bord</h1>
+        <div class="status-badge">✓ Connecté</div>
+      </div>
+
+      <!-- Overview Section -->
+      <section id="overview" class="section active">
+        <h2 class="section-title">Bienvenue dans l'administration</h2>
+        <p>Utilisez le menu latéral pour gérer les couleurs, les images et le contenu de votre site.</p>
+        
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #f0f7ff; border-left: 4px solid var(--primary); border-radius: 6px;">
+          <h3 style="margin-bottom: 0.5rem;">💡 Guide rapide</h3>
+          <ul style="margin-left: 1.5rem; line-height: 1.8;">
+            <li><strong>Couleurs</strong> : Personnalisez la palette de couleurs du site</li>
+            <li><strong>Images</strong> : Mettez à jour les images sur différentes pages</li>
+            <li><strong>Contenu</strong> : Modifiez le texte et les informations</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Colors Section -->
+      <section id="colors" class="section">
+        <h2 class="section-title">🎨 Personnaliser les couleurs</h2>
+        
+        <div id="colorMessage" class="message"></div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="colorPrimary">Couleur primaire</label>
+            <input type="color" id="colorPrimary" value="#667eea">
+          </div>
+          <div class="form-group">
+            <label for="colorAccent">Couleur d'accent</label>
+            <input type="color" id="colorAccent" value="#ff6b6b">
+          </div>
+          <div class="form-group">
+            <label for="colorBackground">Couleur de fond</label>
+            <input type="color" id="colorBackground" value="#ffffff">
+          </div>
+        </div>
+
+        <div class="color-preview" id="colorPreview"></div>
+
+        <div class="button-group">
+          <button class="btn btn-primary" id="saveColorsBtn">💾 Enregistrer les couleurs</button>
+          <button class="btn btn-secondary" id="resetColorsBtn">↺ Réinitialiser</button>
+        </div>
+      </section>
+
+      <!-- Images Section -->
+      <section id="images" class="section">
+        <h2 class="section-title">🖼️ Gérer les images</h2>
+        
+        <div id="imageMessage" class="message"></div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="imageHero">Image Hero (Accueil)</label>
+            <input type="url" id="imageHero" placeholder="https://...">
+            <small style="color: var(--text-light); margin-top: 0.25rem;">URL complète de l'image</small>
+          </div>
+          <div class="form-group">
+            <label for="imageContact">Image Contact</label>
+            <input type="url" id="imageContact" placeholder="https://...">
+            <small style="color: var(--text-light); margin-top: 0.25rem;">URL complète de l'image</small>
+          </div>
+          <div class="form-group">
+            <label for="imageGallery">Image Galerie</label>
+            <input type="url" id="imageGallery" placeholder="https://...">
+            <small style="color: var(--text-light); margin-top: 0.25rem;">URL complète de l'image</small>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn btn-primary" id="saveImagesBtn">💾 Enregistrer les images</button>
+        </div>
+      </section>
+
+      <!-- Content Section -->
+      <section id="content" class="section">
+        <h2 class="section-title">📝 Gérer le contenu</h2>
+        
+        <div id="contentMessage" class="message"></div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="siteTitle">Titre du site</label>
+          <input type="text" id="siteTitle" placeholder="Délicissime – Traiteur & Ateliers de cuisine">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="tagline">Tagline / Slogan</label>
+          <textarea id="tagline" placeholder="Partageons une cuisine gourmande et conviviale"></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="aboutText">À propos</label>
+          <textarea id="aboutText" placeholder="Texte de la section À propos..."></textarea>
+        </div>
+
+        <div class="button-group">
+          <button class="btn btn-primary" id="saveContentBtn">💾 Enregistrer le contenu</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // État global
+    let config = {
+      colors: {},
+      images: {},
+      content: {}
+    };
+
+    const token = localStorage.getItem("adminToken");
+    const user = JSON.parse(localStorage.getItem("adminUser") || "{}");
+
+    // Vérifier l'authentification
+    if (!token) {
+      window.location.href = "/login";
+    }
+
+    // Afficher l'utilisateur
+    document.getElementById("userDisplay").textContent = user.username || "Admin";
+
+    // Navigation
+    document.querySelectorAll(".nav-link").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        switchSection(link.dataset.section);
+      });
+    });
+
+    function switchSection(sectionId) {
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+      
+      document.getElementById(sectionId).classList.add("active");
+      event.target.classList.add("active");
+
+      const titles = {
+        overview: "Tableau de bord",
+        colors: "Personnaliser les couleurs",
+        images: "Gérer les images",
+        content: "Gérer le contenu"
+      };
+      document.getElementById("sectionTitle").textContent = titles[sectionId];
+    }
+
+    // Charger la configuration
+    async function loadConfig() {
+      try {
+        const response = await fetch("/api/content/config");
+        config = await response.json();
+        populateForm();
+      } catch (error) {
+        console.error("Erreur lors du chargement de la config:", error);
+      }
+    }
+
+    function populateForm() {
+      // Couleurs
+      document.getElementById("colorPrimary").value = config.colors?.primary || "#667eea";
+      document.getElementById("colorAccent").value = config.colors?.accent || "#ff6b6b";
+      document.getElementById("colorBackground").value = config.colors?.background || "#ffffff";
+
+      // Images
+      document.getElementById("imageHero").value = config.images?.hero || "";
+      document.getElementById("imageContact").value = config.images?.contact || "";
+      document.getElementById("imageGallery").value = config.images?.gallery || "";
+
+      // Contenu
+      document.getElementById("siteTitle").value = config.content?.title || "Délicissime";
+      document.getElementById("tagline").value = config.content?.tagline || "";
+      document.getElementById("aboutText").value = config.content?.about || "";
+    }
+
+    // Sauvegarder les couleurs
+    document.getElementById("saveColorsBtn").addEventListener("click", async () => {
+      const colors = {
+        primary: document.getElementById("colorPrimary").value,
+        accent: document.getElementById("colorAccent").value,
+        background: document.getElementById("colorBackground").value
+      };
+
+      try {
+        const response = await fetch("/api/content/colors", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ colors })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage("colorMessage", "Couleurs enregistrées avec succès!", "success");
+          config.colors = colors;
+        } else {
+          showMessage("colorMessage", data.error || "Erreur lors de l'enregistrement", "error");
+        }
+      } catch (error) {
+        showMessage("colorMessage", "Erreur réseau: " + error.message, "error");
+      }
+    });
+
+    // Sauvegarder les images
+    document.getElementById("saveImagesBtn").addEventListener("click", async () => {
+      const images = {
+        hero: document.getElementById("imageHero").value,
+        contact: document.getElementById("imageContact").value,
+        gallery: document.getElementById("imageGallery").value
+      };
+
+      try {
+        const response = await fetch("/api/content/image", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ pageKey: "all", imageUrl: JSON.stringify(images) })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage("imageMessage", "Images enregistrées avec succès!", "success");
+          config.images = images;
+        } else {
+          showMessage("imageMessage", data.error || "Erreur lors de l'enregistrement", "error");
+        }
+      } catch (error) {
+        showMessage("imageMessage", "Erreur réseau: " + error.message, "error");
+      }
+    });
+
+    // Sauvegarder le contenu
+    document.getElementById("saveContentBtn").addEventListener("click", async () => {
+      const content = {
+        title: document.getElementById("siteTitle").value,
+        tagline: document.getElementById("tagline").value,
+        about: document.getElementById("aboutText").value
+      };
+
+      try {
+        const response = await fetch("/api/content/content", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ content })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage("contentMessage", "Contenu enregistré avec succès!", "success");
+          config.content = content;
+        } else {
+          showMessage("contentMessage", data.error || "Erreur lors de l'enregistrement", "error");
+        }
+      } catch (error) {
+        showMessage("contentMessage", "Erreur réseau: " + error.message, "error");
+      }
+    });
+
+    // Réinitialiser les couleurs
+    document.getElementById("resetColorsBtn").addEventListener("click", () => {
+      document.getElementById("colorPrimary").value = "#667eea";
+      document.getElementById("colorAccent").value = "#ff6b6b";
+      document.getElementById("colorBackground").value = "#ffffff";
+    });
+
+    // Déconnexion
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("adminUser");
+      window.location.href = "/login";
+    });
+
+    function showMessage(elementId, message, type) {
+      const element = document.getElementById(elementId);
+      element.textContent = message;
+      element.className = `message show ${type}`;
+      setTimeout(() => {
+        element.classList.remove("show");
+      }, 4000);
+    }
+
+    // Charger la config au démarrage
+    loadConfig();
+  </script>
+</body>
+</html>

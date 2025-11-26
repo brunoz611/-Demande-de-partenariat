@@ -12,3 +12,28 @@ node_modules/
 dist/
 out/
 build/
+
+## Admin data (sensible)
+data/
+data/admin-config.json
+
+## Logs
+logs/
+*.log
+npm-debug.log
+yarn-error.log
+
+## OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+## Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

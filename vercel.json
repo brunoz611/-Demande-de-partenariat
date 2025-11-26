@@ -1,8 +1,15 @@
 {
+  "version": 2,
   "cleanUrls": true,
+  "buildCommand": "npm install",
+  "public": true,
   "rewrites": [
-    { "source": "/admin", "destination": "/api/admin" },
-    { "source": "/admin/", "destination": "/api/admin" },
-    { "source": "/admin.html", "destination": "/api/admin" }
-  ]
+    { "source": "/api/(.*)", "destination": "/server.js" },
+    { "source": "/login", "destination": "/server.js" },
+    { "source": "/admin", "destination": "/server.js" },
+    { "source": "/(.*)", "destination": "/server.js" }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }

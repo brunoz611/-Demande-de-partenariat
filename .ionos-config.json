@@ -1,0 +1,44 @@
+{
+  "description": "Configuration IONOS pour Délicissime",
+  "platform": "IONOS",
+  "nodeVersion": "22.x",
+  "portConfiguration": {
+    "development": 3000,
+    "production": "Auto-assigned by IONOS (check panel)"
+  },
+  "environment": {
+    "NODE_ENV": "production",
+    "PORT": "Will be auto-assigned by IONOS"
+  },
+  "deployment": {
+    "method": "Git push or SFTP",
+    "buildCommand": "npm install",
+    "startCommand": "npm start",
+    "root": "./",
+    "staticFiles": [
+      "*.html",
+      "assets/css/",
+      "assets/js/",
+      "assets/images/"
+    ],
+    "apiRoutes": [
+      "/api/auth/*",
+      "/api/content/*"
+    ]
+  },
+  "files": {
+    "dataStorage": "data/admin-config.json",
+    "environment": ".env (to be created on IONOS panel)"
+  },
+  "requiredEnvironmentVariables": {
+    "ADMIN_USERNAME": "admin",
+    "ADMIN_PASSWORD": "Change this to a secure password",
+    "JWT_SECRET": "Generate a secure random string"
+  },
+  "notes": [
+    "IONOS typically auto-assigns PORT via NODE_PORT or PORT env var",
+    "Data is stored in data/admin-config.json (ensure data/ folder is writable)",
+    "JWT tokens expire after 24 hours",
+    "All static files are served from root directory"
+  ]
+}
